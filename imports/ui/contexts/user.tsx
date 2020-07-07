@@ -2,12 +2,13 @@ import * as React from 'react';
 
 import { useTracker } from 'meteor/react-meteor-data';
 import { Meteor } from 'meteor/meteor';
+import { IKaffeeUser } from '/imports/api/models/user';
 
-interface IUserContext {
+export interface IUserContext {
   isLoggedIn: boolean
   isLoggingIn: boolean
   userId?: string | null
-  user?: Meteor.User | null
+  user?: IKaffeeUser | null
 }
 
 const userContext = React.createContext<Partial<IUserContext>>({});
@@ -16,8 +17,9 @@ const Provider = userContext.Provider;
 
 
 const Component: React.SFC = (props) => {
+
   const { isLoggedIn, isLoggingIn, user, userId} = useTracker(() => {
-    const user = Meteor.user()
+    const user = Meteor.user() as IKaffeeUser
     const userId = Meteor.userId()
     return {
       user,
@@ -25,6 +27,11 @@ const Component: React.SFC = (props) => {
       isLoggingIn: Meteor.loggingIn(),
       isLoggedIn: !!userId
     }
+  }, [])
+
+  React.useEffect(() => {
+    const sub = Meteor.subscribe("internal.user")
+    return () => sub.stop();
   }, [])
 
   const value = React.useMemo(() => ({

@@ -8,9 +8,10 @@ import UserContext from './contexts/user';
 
 import { IndexPage } from './pages';
 import { LoginPage } from './pages/login';
-
+import { SignupPage } from './pages/signup';
 
 const Safe = () => <div><p>Safe</p></div>
+const AdminPage = () => <div><p>ADMANG!!!</p></div>
 
 export default () => {
   const {isLoggingIn, isLoggedIn, user} = React.useContext(UserContext.Context);
@@ -23,24 +24,28 @@ export default () => {
 
   return (
     <>
-      <h1>Welcome to Meteor!</h1>
       {isLoggingIn && <p>Logging in...</p>}
-      {isLoggedIn && <p>Hallo, {user?.username}</p>}
-
+      {isLoggedIn && <p>Hallo, {user?.emails[0]?.address}</p>}
       <ul>
         <li><Link to="/">Index</Link></li>
         {isLoggedIn ? ( 
           <li><a href="#" onClick={Logout}>Logout</a></li>
-        ) : (
-          <li><Link to="/login">Login</Link></li>
-        )}
+          ) : (
+            <>
+              <li><Link to="/login">Login</Link></li>
+              <li><Link to="/signup">Anmelden</Link></li>
+            </>
+          )}
         <li><Link to="/safe">Safe</Link></li>
+        <li><Link to="/admin">Admin</Link></li>
       </ul>
       <Switch>
         <Route exact path="/" component={IndexPage} />
         <Route exact path="/login" component={LoginPage} />
+        <Route exact path="/signup/:signupId" component={SignupPage} />
         
         <Authenticated exact path="/safe" component={Safe} redirect="/login" />
+        <Authenticated exact path="/admin" component={AdminPage} admin={true} redirect="/login" />
       </Switch>
     </>
   );

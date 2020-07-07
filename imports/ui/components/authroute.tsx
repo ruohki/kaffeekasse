@@ -5,10 +5,13 @@ import { RouteProps, Route, Redirect } from 'react-router-dom';
 
 interface IAuthenticated extends RouteProps {
   redirect: string
+  admin?: boolean
 }
 
-export const Authenticated: React.SFC<IAuthenticated> = ({ redirect,  ...props }) => {
-  const { isLoggedIn, isLoggingIn } = React.useContext(UserContext.Context)
+export const Authenticated: React.SFC<IAuthenticated> = ({ redirect, admin,  ...props }) => {
+  const { isLoggedIn, isLoggingIn, user } = React.useContext(UserContext.Context)
+
+  if (admin && !user?.isAdmin) return <Redirect to={redirect} />
 
   return isLoggedIn ? (
     <Route {...props} />
@@ -19,4 +22,8 @@ export const Authenticated: React.SFC<IAuthenticated> = ({ redirect,  ...props }
       <Redirect to={redirect} />
     )
   )
+}
+
+Authenticated.defaultProps = {
+  admin: false
 }

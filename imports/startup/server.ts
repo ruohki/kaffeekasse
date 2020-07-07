@@ -1,31 +1,25 @@
+import '../api/publications';
+import '../api/models/invitatios';
+import { Accounts } from 'meteor/accounts-base';
+
 import { Meteor } from 'meteor/meteor';
-import { Links } from '/imports/api/links';
- 
-function insertLink(title: string, url: string) {
-  Links.insert({ title, url, createdAt: new Date() });
-}
+import { Invitations } from '../api/models/invitatios';
 
-Meteor.startup(() => {
-  // If the Links collection is empty, add some data.
-  if (Links.find().count() === 0) {
-    insertLink(
-      'Do the Tutorial',
-      'https://www.meteor.com/tutorials/react/creating-an-app'
-    );
-
-    insertLink(
-      'Follow the Guide',
-      'http://guide.meteor.com'
-    );
-
-    insertLink(
-      'Read the Docs',
-      'https://docs.meteor.com'
-    );
-
-    insertLink(
-      'Discussions',
-      'https://forums.meteor.com'
-    );
+/* Accounts.validateNewUser((user: IKaffeeUser) => {
+  console.log(user.username)
+  if (Invitations.findOne({ _id: user.username })) {
+    //Invitations.remove({ _id: user.username });
+    return true;
+  } else {
   }
+}); */
+
+Accounts.onCreateUser((options, user) => {
+  if (Invitations.findOne({ _id: user.username })) {
+    Invitations.remove({ _id: user.username });
+    //@ts-ignore
+    return Object.assign(user, { username: options.email })
+  }
+
+  throw new Meteor.Error(403, 'Einladung ist nicht gültig');
 });
