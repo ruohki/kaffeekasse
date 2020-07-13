@@ -1,5 +1,8 @@
 import '../api/publications';
 import '../api/models/invitatios';
+import '../api/models/orders';
+import '../api/models/products';
+
 import { Accounts } from 'meteor/accounts-base';
 
 import { Meteor } from 'meteor/meteor';

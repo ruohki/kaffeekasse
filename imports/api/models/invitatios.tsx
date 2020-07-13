@@ -2,6 +2,8 @@ import { Mongo } from 'meteor/mongo';
 import { Meteor } from 'meteor/meteor';
 import validator from 'validator';
 import moment from 'moment';
+import { isAdmin } from '../helper';
+import { check } from 'meteor/check';
 
 interface IInvitation {
   email: string
@@ -11,14 +13,21 @@ interface IInvitation {
 export const Invitations = new Mongo.Collection<IInvitation>("invitations");
 
 Meteor.methods({
-  'admin.invitation.create': async function (email: string) {
-    if (!validator.isEmail(email)) return Error("EMail ist ungültig.");
-    //@ts-ignore
-    if (!Meteor.user().isAdmin) return Error("Du bist kein Admin.")
+  'admin.invitation.create': async function (email: string): Promise<string> {
+    if (!validator.isEmail(email)) throw Error("EMail ist ungültig.");
     
-    await Invitations.insert({ 
+    isAdmin();
+    
+    return await Invitations.insert({ 
       email,
       createdAt: moment().valueOf()
     })
   }
 })
+
+if (Meteor.isServer) {
+  Meteor.publish('signup.invitation', function (signupId: string) {
+    check(signupId, String);
+    return Invitations.find({ _id: signupId });
+  });
+}
