@@ -20,7 +20,7 @@
     "bootstrap": "^4.5.0",
     "indexof": "0.0.1",
     "jquery": "^3.5.1",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "meteor-node-stubs": "^1.0.0",
     "moment": "^2.27.0",
     "polished": "^3.6.5",
