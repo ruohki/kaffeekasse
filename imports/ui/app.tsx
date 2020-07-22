@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import 'antd-mobile/dist/antd-mobile.css';
+
 import { Meteor } from 'meteor/meteor';
 import { Switch, Route, Link, useHistory } from 'react-router-dom';
 import { Authenticated } from './components/authroute';
@@ -11,9 +13,12 @@ import { LoginPage } from './pages/login';
 import { SignupPage } from './pages/signup';
 import { OrderPage } from './pages/order';
 import { MePage } from './pages/me';
+import { Menu } from './components/menu';
 
 const Safe = () => <div><p>Safe</p></div>
 const AdminPage = () => <div><p>ADMANG!!!</p></div>
+
+
 
 export default () => {
   const {isLoggingIn, isLoggedIn, user} = React.useContext(UserContext.Context);
@@ -25,7 +30,8 @@ export default () => {
   }
 
   return (
-    <>
+    <div style={{ position: 'fixed', height: '100%', width: '100%', top: 0 }}>
+    <Menu>
       {isLoggingIn && <p>Logging in...</p>}
       {isLoggedIn && <p>Hallo, {user?.emails[0]?.address}</p>}
       <ul>
@@ -45,16 +51,18 @@ export default () => {
         <li><Link to="/safe">Safe</Link></li>
         <li><Link to="/admin">Admin</Link></li>
       </ul>
-      <Switch>
-        <Route exact path="/" component={IndexPage} />
-        <Route exact path="/login" component={LoginPage} />
-        <Route exact path="/signup/:signupId" component={SignupPage} />
-        
-        <Authenticated exact path="/me" component={MePage} redirect="/login" />
-        <Authenticated exact path="/order" component={OrderPage} redirect="/login" />
-        <Authenticated exact path="/safe" component={Safe} redirect="/login" />
-        <Authenticated exact path="/admin" component={AdminPage} admin={true} redirect="/login" />
-      </Switch>
-    </>
+        <Switch>
+          <Route exact path="/" component={IndexPage} />
+          <Route exact path="/login" component={LoginPage} />
+          <Route exact path="/signup/:signupId" component={SignupPage} />
+          
+          <Authenticated exact path="/me" component={MePage} redirect="/login" />
+          <Authenticated exact path="/order" component={OrderPage} redirect="/login" />
+          <Authenticated exact path="/safe" component={Safe} redirect="/login" />
+          <Authenticated exact path="/admin" component={AdminPage} admin={true} redirect="/login" />
+        </Switch>
+      
+        </Menu>
+    </div>
   );
 }

@@ -1,8 +1,6 @@
 import * as React from 'react';
 
-import { Accounts } from 'meteor/accounts-base';
-
-import { useHistory, useParams } from 'react-router-dom';
+import { Button } from 'antd-mobile'
 import { Meteor } from 'meteor/meteor';
 import { useTracker } from 'meteor/react-meteor-data';
 import { Products } from '/imports/api/models/products';
@@ -28,13 +26,13 @@ export const OrderPage: React.SFC = (props) => {
         <ul>
           {products.map(p => <li key={p._id}>
             {p.name} [{p.price.toFixed(2)}€]{' '}
-            <button disabled={recentlyOrdered} onClick={() => {
+            <Button disabled={recentlyOrdered} onClick={() => {
               setRecently(true);
               Meteor.call('orders.create', { product: p._id, quantity: 1}, (err: Meteor.Error, data: unknown) => {
                 if (err) return console.error(err);
                 setTimeout(() => setRecently(false), 1000);  
               })
-            }}>bestellen</button>
+            }}>bestellen</Button>
           </li>)}
         </ul>
       </div>
